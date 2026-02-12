@@ -130,6 +130,7 @@ src/
 - Red → Green → Refactor のサイクルを守る
 - テストがグリーンの状態でのみ push する
 - テストフレームワーク: Vitest + React Testing Library
+- テストの describe / it には日本語でタイトルをつける
 
 ## 実装フェーズ
 

@@ -25,15 +25,15 @@ export function GameScreen({ questions, duration, onFinish }: Props) {
   }, []);
 
   // キーボード入力のハンドリング
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-        game.handleKeyPress(e.key);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [game.handleKeyPress]);
+  // useEffect(() => {
+  //   const handleKeyDown = (e: KeyboardEvent) => {
+  //     if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+  //       game.handleKeyPress(e.key);
+  //     }
+  //   };
+  //   // window.addEventListener('keydown', handleKeyDown);
+  //   return () => window.removeEventListener('keydown', handleKeyDown);
+  // }, [game.handleKeyPress]);
 
   // 時間切れまたは全問完了でゲーム終了
   useEffect(() => {

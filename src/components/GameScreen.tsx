@@ -16,21 +16,13 @@ export function GameScreen({ questions, duration, onFinish }: Props) {
   const game = useTypingGame(questions);
   const hasFinishedRef = useRef(false);
 
-  // ゲーム開始時にタイマースタート
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // ゲーム開始時にタイマースタート & フォーカス
   useEffect(() => {
     timer.start();
+    containerRef.current?.focus();
   }, []);
-
-  // キーボード入力のハンドリング
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-        game.handleKeyPress(e.key);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [game.handleKeyPress]);
 
   // 時間切れまたは全問完了でゲーム終了
   useEffect(() => {
@@ -57,8 +49,21 @@ export function GameScreen({ questions, duration, onFinish }: Props) {
     }
   }, [timer.isTimeUp, game.isFinished]);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      e.preventDefault();
+      game.handleKeyPress(e.key);
+    }
+  };
+
   return (
-    <div className={styles.container}>
+    <div
+      ref={containerRef}
+      className={styles.container}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      onClick={() => containerRef.current?.focus()}
+    >
       <div className={styles.header}>
         <span className={styles.timer} data-urgent={timer.remainingTime <= 10}>
           {timer.remainingTime}

@@ -1,4 +1,4 @@
-import { render, screen, act } from '@testing-library/react';
+import { render, screen, act, fireEvent } from '@testing-library/react';
 import { GameScreen } from './GameScreen';
 import type { Question } from '../types';
 
@@ -33,10 +33,9 @@ describe('GameScreen', () => {
   });
 
   it('キー入力で正誤判定が行われる', () => {
-    render(<GameScreen questions={mockQuestions} duration={60} onFinish={() => {}} />);
-    act(() => {
-      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'c' }));
-    });
+    const { container } = render(<GameScreen questions={mockQuestions} duration={60} onFinish={() => {}} />);
+    const gameContainer = container.firstElementChild!;
+    fireEvent.keyDown(gameContainer, { key: 'c' });
     expect(screen.getByTestId('char-0')).toHaveAttribute('data-status', 'correct');
   });
 

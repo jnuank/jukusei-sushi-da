@@ -27,7 +27,6 @@ export function GameScreen({ questions, duration, onFinish }: Props) {
   // キーボード入力のハンドリング
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.repeat) return;
       if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
         game.handleKeyPress(e.key);
       }

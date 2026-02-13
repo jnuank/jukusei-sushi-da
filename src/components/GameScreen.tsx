@@ -62,7 +62,7 @@ export function GameScreen({ questions, duration, onFinish }: Props) {
       className={styles.container}
       tabIndex={0}
       onKeyDown={handleKeyDown}
-      onClick={() => containerRef.current?.focus()}
+      onBlur={() => containerRef.current?.focus()}
     >
       <div className={styles.header}>
         <span className={styles.timer} data-urgent={timer.remainingTime <= 10}>

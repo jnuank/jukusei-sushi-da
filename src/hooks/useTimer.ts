@@ -26,8 +26,13 @@ export function useTimer(duration: number) {
     };
   }, [isRunning, remainingTime <= 0]);
 
+  const isTimeUp = remainingTime <= 0;
+  const elapsedTime = duration - remainingTime;
+
   return {
     remainingTime,
+    isTimeUp,
+    elapsedTime,
     start,
   };
 }

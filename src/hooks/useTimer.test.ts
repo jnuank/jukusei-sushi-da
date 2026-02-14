@@ -36,4 +36,27 @@ describe('useTimer', () => {
     });
     expect(result.current.remainingTime).toBe(0);
   });
+
+  it('残り時間が0になるとisTimeUpがtrueになる', () => {
+    const { result } = renderHook(() => useTimer(3));
+    expect(result.current.isTimeUp).toBe(false);
+    act(() => {
+      result.current.start();
+    });
+    act(() => {
+      vi.advanceTimersByTime(3000);
+    });
+    expect(result.current.isTimeUp).toBe(true);
+  });
+
+  it('経過時間が取得できる', () => {
+    const { result } = renderHook(() => useTimer(60));
+    act(() => {
+      result.current.start();
+    });
+    act(() => {
+      vi.advanceTimersByTime(10000);
+    });
+    expect(result.current.elapsedTime).toBe(10);
+  });
 });

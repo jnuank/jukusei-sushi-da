@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useTypingGame } from './useTypingGame';
 import type { Question } from '../types';
 
@@ -23,5 +23,14 @@ describe('useTypingGame', () => {
     expect(result.current.charStatuses).toEqual([
       'pending', 'pending', 'pending', 'pending', 'pending',
     ]);
+  });
+
+  it('正しい文字を入力するとcorrectになり位置が進む', () => {
+    const { result } = renderHook(() => useTypingGame(mockQuestions));
+    act(() => {
+      result.current.handleKeyPress('c');
+    });
+    expect(result.current.charStatuses[0]).toBe('correct');
+    expect(result.current.currentPosition).toBe(1);
   });
 });

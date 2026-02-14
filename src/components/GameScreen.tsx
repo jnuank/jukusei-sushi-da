@@ -15,12 +15,38 @@ export function GameScreen({ questions, duration, onFinish }: Props) {
   const timer = useTimer(duration);
   const game = useTypingGame(questions);
   const containerRef = useRef<HTMLDivElement>(null);
+  const hasFinishedRef = useRef(false);
 
   // ゲーム開始時にタイマースタート & フォーカス
   useEffect(() => {
     timer.start();
     containerRef.current?.focus();
   }, []);
+
+  // 時間切れまたは全問完了でゲーム終了
+  useEffect(() => {
+    if ((timer.isTimeUp || game.isFinished) && !hasFinishedRef.current) {
+      hasFinishedRef.current = true;
+      const elapsed = timer.isTimeUp ? duration : timer.elapsedTime;
+      const totalKeystrokes = game.totalChars;
+      const accuracy = totalKeystrokes > 0
+        ? (totalKeystrokes - game.missCount) / totalKeystrokes
+        : 0;
+      const wpm = elapsed > 0
+        ? ((totalKeystrokes - game.missCount) / 5) / (elapsed / 60)
+        : 0;
+
+      onFinish({
+        score: game.score,
+        correctCount: game.correctCount,
+        missCount: game.missCount,
+        accuracy,
+        wpm,
+        totalChars: totalKeystrokes,
+        elapsedTime: elapsed,
+      });
+    }
+  }, [timer.isTimeUp, game.isFinished]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {

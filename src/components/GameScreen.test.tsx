@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { GameScreen } from './GameScreen';
 import type { Question } from '../types';
 
@@ -8,6 +8,14 @@ const mockQuestions: Question[] = [
 ];
 
 describe('GameScreen', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('残り時間が表示される', () => {
     render(<GameScreen questions={mockQuestions} duration={60} onFinish={() => {}} />);
     expect(screen.getByText('60')).toBeInTheDocument();
@@ -29,5 +37,23 @@ describe('GameScreen', () => {
     const gameContainer = container.firstElementChild!;
     fireEvent.keyDown(gameContainer, { key: 'c' });
     expect(screen.getByTestId('char-0')).toHaveAttribute('data-status', 'correct');
+  });
+
+  it('時間切れでonFinishが呼ばれる', () => {
+    const onFinish = vi.fn();
+    render(<GameScreen questions={mockQuestions} duration={3} onFinish={onFinish} />);
+    act(() => {
+      vi.advanceTimersByTime(3000);
+    });
+    expect(onFinish).toHaveBeenCalledTimes(1);
+    expect(onFinish).toHaveBeenCalledWith(
+      expect.objectContaining({
+        score: expect.any(Number),
+        correctCount: expect.any(Number),
+        missCount: expect.any(Number),
+        accuracy: expect.any(Number),
+        wpm: expect.any(Number),
+      }),
+    );
   });
 });

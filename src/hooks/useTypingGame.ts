@@ -13,6 +13,7 @@ export function useTypingGame(questions: Question[]) {
   const [missCount, setMissCount] = useState(0);
   const [totalChars, setTotalChars] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
+  const [score, setScore] = useState(0);
 
   const currentQuestion = questions[questionIndex];
 
@@ -36,6 +37,7 @@ export function useTypingGame(questions: Question[]) {
     if (nextPosition >= questions[questionIndex].text.length) {
       // 問題完了 → 次の問題へ
       setCorrectCount((prev) => prev + 1);
+      setScore((prev) => prev + questions[questionIndex].text.length * 10);
       const nextIndex = questionIndex + 1;
       if (nextIndex < questions.length) {
         setQuestionIndex(nextIndex);
@@ -54,6 +56,7 @@ export function useTypingGame(questions: Question[]) {
     missCount,
     totalChars,
     correctCount,
+    score,
     handleKeyPress,
   };
 }

@@ -67,4 +67,15 @@ describe('useTypingGame', () => {
     expect(result.current.charStatuses).toEqual(['pending', 'pending', 'pending']);
     expect(result.current.correctCount).toBe(1);
   });
+
+  it('スコアが問題の文字数 × 10で加算される', () => {
+    const { result } = renderHook(() => useTypingGame(mockQuestions));
+    // "const" = 5文字 × 10 = 50点
+    for (const char of 'const') {
+      act(() => {
+        result.current.handleKeyPress(char);
+      });
+    }
+    expect(result.current.score).toBe(50);
+  });
 });

@@ -78,4 +78,32 @@ describe('useTypingGame', () => {
     }
     expect(result.current.score).toBe(50);
   });
+
+  it('全問題を終えるとisFinishedがtrueになる', () => {
+    const { result } = renderHook(() => useTypingGame(mockQuestions));
+    for (const word of ['const', 'let']) {
+      for (const char of word) {
+        act(() => {
+          result.current.handleKeyPress(char);
+        });
+      }
+    }
+    expect(result.current.isFinished).toBe(true);
+  });
+
+  it('isFinished後は入力を受け付けない', () => {
+    const { result } = renderHook(() => useTypingGame(mockQuestions));
+    for (const word of ['const', 'let']) {
+      for (const char of word) {
+        act(() => {
+          result.current.handleKeyPress(char);
+        });
+      }
+    }
+    const scoreBefore = result.current.score;
+    act(() => {
+      result.current.handleKeyPress('a');
+    });
+    expect(result.current.score).toBe(scoreBefore);
+  });
 });

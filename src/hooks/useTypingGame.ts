@@ -14,10 +14,13 @@ export function useTypingGame(questions: Question[]) {
   const [totalChars, setTotalChars] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [score, setScore] = useState(0);
+  const [isFinished, setIsFinished] = useState(false);
 
   const currentQuestion = questions[questionIndex];
 
   const handleKeyPress = useCallback((key: string) => {
+    if (isFinished) return;
+
     const expected = questions[questionIndex].text[currentPosition];
     const isCorrect = key === expected;
 
@@ -39,7 +42,9 @@ export function useTypingGame(questions: Question[]) {
       setCorrectCount((prev) => prev + 1);
       setScore((prev) => prev + questions[questionIndex].text.length * 10);
       const nextIndex = questionIndex + 1;
-      if (nextIndex < questions.length) {
+      if (nextIndex >= questions.length) {
+        setIsFinished(true);
+      } else {
         setQuestionIndex(nextIndex);
         setCurrentPosition(0);
         setCharStatuses(Array(questions[nextIndex].text.length).fill('pending'));
@@ -47,7 +52,7 @@ export function useTypingGame(questions: Question[]) {
     } else {
       setCurrentPosition(nextPosition);
     }
-  }, [questionIndex, currentPosition, questions]);
+  }, [isFinished, questionIndex, currentPosition, questions]);
 
   return {
     currentQuestion,
@@ -57,6 +62,7 @@ export function useTypingGame(questions: Question[]) {
     totalChars,
     correctCount,
     score,
+    isFinished,
     handleKeyPress,
   };
 }

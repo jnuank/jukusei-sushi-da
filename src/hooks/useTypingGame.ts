@@ -10,6 +10,9 @@ export function useTypingGame(questions: Question[]) {
     () => Array(questions[0].text.length).fill('pending'),
   );
 
+  const [missCount, setMissCount] = useState(0);
+  const [totalChars, setTotalChars] = useState(0);
+
   const currentQuestion = questions[questionIndex];
 
   const handleKeyPress = useCallback((key: string) => {
@@ -22,6 +25,10 @@ export function useTypingGame(questions: Question[]) {
       return next;
     });
 
+    if (!isCorrect) {
+      setMissCount((prev) => prev + 1);
+    }
+    setTotalChars((prev) => prev + 1);
     setCurrentPosition((prev) => prev + 1);
   }, [questionIndex, currentPosition, questions]);
 
@@ -29,6 +36,8 @@ export function useTypingGame(questions: Question[]) {
     currentQuestion,
     currentPosition,
     charStatuses,
+    missCount,
+    totalChars,
     handleKeyPress,
   };
 }

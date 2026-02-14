@@ -1,0 +1,32 @@
+.container {
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: 1.8rem;
+  letter-spacing: 0.05em;
+  padding: 1.5rem;
+  background: #1e1e1e;
+  border-radius: 8px;
+  min-height: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.char {
+  color: #555;
+  transition: color 0.1s;
+}
+
+.correct {
+  color: #4ec9b0;
+}
+
+.miss {
+  color: #f44747;
+  text-decoration: underline;
+}
+
+.current {
+  color: #dcdcaa;
+  border-bottom: 2px solid #dcdcaa;
+}

@@ -4,7 +4,7 @@ import type { Question } from '../types';
 export type CharStatus = 'pending' | 'correct' | 'miss';
 
 export function useTypingGame(questions: Question[]) {
-  const [questionIndex] = useState(0);
+  const [questionIndex, setQuestionIndex] = useState(0);
   const [currentPosition, setCurrentPosition] = useState(0);
   const [charStatuses, setCharStatuses] = useState<CharStatus[]>(
     () => Array(questions[0].text.length).fill('pending'),
@@ -12,6 +12,7 @@ export function useTypingGame(questions: Question[]) {
 
   const [missCount, setMissCount] = useState(0);
   const [totalChars, setTotalChars] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
 
   const currentQuestion = questions[questionIndex];
 
@@ -29,7 +30,21 @@ export function useTypingGame(questions: Question[]) {
       setMissCount((prev) => prev + 1);
     }
     setTotalChars((prev) => prev + 1);
-    setCurrentPosition((prev) => prev + 1);
+
+    const nextPosition = currentPosition + 1;
+
+    if (nextPosition >= questions[questionIndex].text.length) {
+      // 問題完了 → 次の問題へ
+      setCorrectCount((prev) => prev + 1);
+      const nextIndex = questionIndex + 1;
+      if (nextIndex < questions.length) {
+        setQuestionIndex(nextIndex);
+        setCurrentPosition(0);
+        setCharStatuses(Array(questions[nextIndex].text.length).fill('pending'));
+      }
+    } else {
+      setCurrentPosition(nextPosition);
+    }
   }, [questionIndex, currentPosition, questions]);
 
   return {
@@ -38,6 +53,7 @@ export function useTypingGame(questions: Question[]) {
     charStatuses,
     missCount,
     totalChars,
+    correctCount,
     handleKeyPress,
   };
 }

@@ -54,4 +54,17 @@ describe('useTypingGame', () => {
     });
     expect(result.current.totalChars).toBe(2);
   });
+
+  it('問題を最後まで入力すると次の問題に進む', () => {
+    const { result } = renderHook(() => useTypingGame(mockQuestions));
+    for (const char of 'const') {
+      act(() => {
+        result.current.handleKeyPress(char);
+      });
+    }
+    expect(result.current.currentQuestion.text).toBe('let');
+    expect(result.current.currentPosition).toBe(0);
+    expect(result.current.charStatuses).toEqual(['pending', 'pending', 'pending']);
+    expect(result.current.correctCount).toBe(1);
+  });
 });
